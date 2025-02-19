@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS `mservice` (
   `id` varchar(60) NOT NULL,             -- Garde l'`id` du joueur comme un champ, mais ce ne sera pas la clé primaire
   `firstname` tinytext NOT NULL,
   `name` tinytext NOT NULL,
+  `job` varchar NOT NULL;
   `start` int NOT NULL,
   `fin` int NOT NULL,
   INDEX (`id`) -- Optionnel : Index pour améliorer la recherche par `player_id`

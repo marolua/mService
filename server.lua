@@ -9,11 +9,19 @@ AddEventHandler('M:StartService', function ()
         xPlayer.showNotification("Vous êtes déjà en service !")
     else
         services[id] = {
+            start = os.time(),
             firstname = xPlayer.get('firstName'),
             name = xPlayer.get('lastName'),
-            start = os.time()
+            jobname = xPlayer.job.name
         }
     end
+end)
+
+RegisterNetEvent("esx:playerDropped", function (playerId, reason)
+    local xPlayer = ESX.GetPlayerFromId(playerId)
+    local id = xPlayer.getIdentifier()
+
+    services[id] = {}
 end)
 
 RegisterNetEvent('M:StopServiceAndSendLogs')
@@ -23,15 +31,16 @@ AddEventHandler('M:StopServiceAndSendLogs', function ()
     local id = xPlayer.getIdentifier()
     local fin = os.time()
 
-    if services[id] == nil then
+    if services[id] ~= nil or {} then
         xPlayer.showNotification("Vous n'avez pas commencer de service !")
     else
         local total = (fin - services[id].start)
-        SendDiscordLog("https://discord.com/api/webhooks/1335693378075099227/geuoOheuMrnhH4KOfpm2HVKM6yh6VVRAfKmBC6MJoXyZiJFDFEBOq_vlXxhUJXvZloXq", "Temps de service", "Nom & Prénom : " .. services[id].firstname .. " " .. services[id].name .. " | Temps de service : " ..os.date("!%H:%M:%S", total), 65280)
-        MySQL.insert("INSERT INTO `mService` (`id`, `firstname`, `name`, `start`, `fin`) VALUES (@id, @firstname, @name, @start, @fin)", {
+        SendDiscordLog("https://discord.com/api/webhooks/1335693378075099227/geuoOheuMrnhH4KOfpm2HVKM6yh6VVRAfKmBC6MJoXyZiJFDFEBOq_vlXxhUJXvZloXq", "Temps de service", "Nom & Prénom : " .. services[id].firstname .. " " .. services[id].name .. " Job : " .. services[id].jobname .. " | Temps de service : " ..os.date("!%H:%M:%S", total), 65280)
+        MySQL.insert("INSERT INTO `mService` (`id`, `firstname`, `name`, `job`, `start`, `fin`) VALUES (@id, @firstname, @name, @job, @start, @fin)", {
             ['@id'] = id,
             ['@firstname'] = xPlayer.get('firstName'),
             ['@name'] = xPlayer.get('lastName'),
+            ['@job'] = xPlayer.job.name,
             ['@start'] = services[id].start,
             ['@fin'] = fin
         })
