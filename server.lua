@@ -21,7 +21,7 @@ end)
 
 RegisterNetEvent("esx:playerDropped", function (playerId, reason)
     local xPlayerID = ESX.GetPlayerFromId(playerId)?.getIdentifier()
-    services[xPlayerID] = {}
+    services[xPlayerID] = nil
 end)
 
 RegisterNetEvent('M:StopServiceAndSendLogs', function ()
